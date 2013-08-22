@@ -11,25 +11,42 @@ import android.widget.ListView;
 
 import com.example.nearbyrestaurants.adapter.RestaurantsArrayAdapter;
 import com.example.nearbyrestaurants.model.Restaurant;
+import com.example.nearbyrestaurants.network.RestaurantSearcher;
+import com.example.nearbyrestaurants.network.SearchRestaurantsAsyncTask;
 
-public class RestaurantListActivity extends Activity {
+public class RestaurantListActivity extends Activity implements RestaurantSearcher {
 
+	private SearchRestaurantsAsyncTask searchRestaurantsTask;
+
+	private RestaurantsArrayAdapter restaurantsArrayAdapter;
+
+
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_restaurant_list);
 
-		ListView lvRestaurant = (ListView) findViewById(R.id.listView);
+		fillListWithCachedRestaurants();
 
-		List<Restaurant> restaurants = getCachedRestaurants();
-		lvRestaurant.setAdapter(new RestaurantsArrayAdapter(this, restaurants));
-		lvRestaurant.setEmptyView(findViewById(R.id.empty));
+		searchRestaurantsTask = (SearchRestaurantsAsyncTask) getLastNonConfigurationInstance();
+		if (searchRestaurantsTask != null) {
+			searchRestaurantsTask.setLauncherActivity(this);
+		}
 
 	}
 
-	private List<Restaurant> getCachedRestaurants() {
-		// TODO getCachedRestaurants
-		return new ArrayList<Restaurant>();
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		return searchRestaurantsTask;
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (searchRestaurantsTask != null) {
+			searchRestaurantsTask.setLauncherActivity(null);
+		}
 	}
 
 	@Override
@@ -41,15 +58,42 @@ public class RestaurantListActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.action_search) {
-			updateRestaurantsFromNetwork();
+			double miles = 1.0;
+			searchRestaurantsInRadius(miles);
 			return true;
 		}
 		return false;
 	}
 
-	private void updateRestaurantsFromNetwork() {
-		// TODO Auto-generated method stub
-		
+	private void fillListWithCachedRestaurants() {
+		ListView lvRestaurant = (ListView) findViewById(R.id.listView);
+
+		List<Restaurant> restaurants = getCachedRestaurants();
+
+		restaurantsArrayAdapter = new RestaurantsArrayAdapter(this, restaurants);
+		lvRestaurant.setAdapter(restaurantsArrayAdapter);
+		lvRestaurant.setEmptyView(findViewById(R.id.empty));
+	}
+
+	private List<Restaurant> getCachedRestaurants() {
+		// TODO getCachedRestaurants
+		return new ArrayList<Restaurant>();
+	}
+
+	@Override
+	public void searchRestaurantsInRadius(Double distanceinMiles) {
+		searchRestaurantsTask = new SearchRestaurantsAsyncTask(this);
+		searchRestaurantsTask.execute(distanceinMiles);
+
+	}
+
+	@Override
+	public void updateRestaurantsInformation(List<Restaurant> foundRestaurants) {
+		if (restaurantsArrayAdapter != null) {
+			restaurantsArrayAdapter.clear();
+			restaurantsArrayAdapter.addAll(foundRestaurants);
+			restaurantsArrayAdapter.notifyDataSetChanged();
+		}
 	}
 
 }
