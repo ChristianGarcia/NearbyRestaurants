@@ -1,4 +1,4 @@
-package com.example.nearbyrestaurants.network;
+package com.example.nearbyrestaurants.googleplaces;
 
 public class GooglePlace {
 

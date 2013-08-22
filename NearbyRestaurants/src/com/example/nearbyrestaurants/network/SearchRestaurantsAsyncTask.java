@@ -15,6 +15,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.app.Activity;
 import android.os.AsyncTask;
 
+import com.example.nearbyrestaurants.googleplaces.GooglePlace;
+import com.example.nearbyrestaurants.googleplaces.GooglePlacesNearbyRequest;
+import com.example.nearbyrestaurants.googleplaces.GooglePlacesResponse;
+import com.example.nearbyrestaurants.googleplaces.GooglePlacesRestaurantsNearbyRequest;
 import com.example.nearbyrestaurants.model.Coordinates;
 import com.example.nearbyrestaurants.model.Restaurant;
 import com.google.gson.Gson;

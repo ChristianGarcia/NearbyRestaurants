@@ -1,4 +1,4 @@
-package com.example.nearbyrestaurants.network;
+package com.example.nearbyrestaurants.googleplaces;
 
 import java.util.List;
 
