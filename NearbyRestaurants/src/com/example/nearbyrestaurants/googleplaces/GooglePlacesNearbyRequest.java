@@ -16,6 +16,8 @@ public class GooglePlacesNearbyRequest {
 
 	private String keyword;
 
+	private String pageToken;
+
 	public GooglePlacesNearbyRequest(String location, String radius, boolean sensor, String keyword) {
 		super();
 		this.location = location;
@@ -31,7 +33,12 @@ public class GooglePlacesNearbyRequest {
 		sb.append("&radius=" + radius);
 		sb.append("&sensor=" + sensor);
 		sb.append("&keyword=" + keyword);
+		sb.append("&pagetoken=" + pageToken);
 		return sb.toString();
+	}
+
+	public void setPageToken(String pageToken) {
+		this.pageToken = pageToken;
 	}
 
 }

@@ -39,14 +39,19 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 
 	@Override
 	protected List<Restaurant> doInBackground(Double... distancesInMeters) {
-
+		List<Restaurant> restaurants = new ArrayList<Restaurant>();
 		String radiusInMeters = String.valueOf(distancesInMeters[0]);
 
 		GooglePlacesNearbyRequest request = new GooglePlacesRestaurantsNearbyRequest("41.42,2.16", radiusInMeters);
 		try {
-			// TODO Page results
-			GooglePlacesResponse places = searchPlaces(request);
-			List<Restaurant> restaurants = placesToRestaurants(places);
+			GooglePlacesResponse places;
+			String nextPageToken = "";
+			do {
+				request.setPageToken(nextPageToken);
+				places = searchPlaces(request);
+				nextPageToken = places.getNext_page_token();
+				restaurants.addAll(placesToRestaurants(places));
+			} while (nextPageToken != null);
 			return restaurants;
 		} catch (IOException e) {
 			return null;
