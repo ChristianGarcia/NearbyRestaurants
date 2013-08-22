@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.example.nearbyrestaurants.adapter.RestaurantsArrayAdapter;
@@ -33,9 +34,22 @@ public class RestaurantListActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.restaurant_list, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == R.id.action_search) {
+			updateRestaurantsFromNetwork();
+			return true;
+		}
+		return false;
+	}
+
+	private void updateRestaurantsFromNetwork() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
