@@ -4,5 +4,6 @@
     <string name="app_name">NearbyRestaurants</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="list_restaurant_empty">You haven\'t searched any restaurant so far. Click search again to start.</string>
 
 </resources>

@@ -8,9 +8,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".RestaurantListActivity" >
 
-    <TextView
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
+
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/list_restaurant_empty" />
 
 </RelativeLayout>
