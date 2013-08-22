@@ -1,4 +1,4 @@
-package com.example.nearbyrestaurants.network;
+package com.example.nearbyrestaurants.task;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

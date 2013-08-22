@@ -11,8 +11,8 @@ import android.widget.ListView;
 
 import com.example.nearbyrestaurants.adapter.RestaurantsArrayAdapter;
 import com.example.nearbyrestaurants.model.Restaurant;
-import com.example.nearbyrestaurants.network.RestaurantSearcher;
-import com.example.nearbyrestaurants.network.SearchRestaurantsAsyncTask;
+import com.example.nearbyrestaurants.task.RestaurantSearcher;
+import com.example.nearbyrestaurants.task.SearchRestaurantsAsyncTask;
 
 public class RestaurantListActivity extends Activity implements RestaurantSearcher {
 
