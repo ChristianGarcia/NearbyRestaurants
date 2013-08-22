@@ -16,10 +16,13 @@ import com.example.nearbyrestaurants.network.SearchRestaurantsAsyncTask;
 
 public class RestaurantListActivity extends Activity implements RestaurantSearcher {
 
+	private static final double RADIUS_IN_MILES = 1.0;
+
+	private static final double METERS_IN_ONE_MILE = 1609.344;
+
 	private SearchRestaurantsAsyncTask searchRestaurantsTask;
 
 	private RestaurantsArrayAdapter restaurantsArrayAdapter;
-
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -58,8 +61,7 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.action_search) {
-			double miles = 1.0;
-			searchRestaurantsInRadius(miles);
+			searchRestaurantsInRadius(RADIUS_IN_MILES * METERS_IN_ONE_MILE);
 			return true;
 		}
 		return false;
@@ -81,19 +83,24 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 	}
 
 	@Override
-	public void searchRestaurantsInRadius(Double distanceinMiles) {
+	public void searchRestaurantsInRadius(Double distanceInMeters) {
 		searchRestaurantsTask = new SearchRestaurantsAsyncTask(this);
-		searchRestaurantsTask.execute(distanceinMiles);
+		searchRestaurantsTask.execute(distanceInMeters);
 
 	}
 
 	@Override
-	public void updateRestaurantsInformation(List<Restaurant> foundRestaurants) {
+	public void searchRestaurantsSuccessful(List<Restaurant> foundRestaurants) {
 		if (restaurantsArrayAdapter != null) {
 			restaurantsArrayAdapter.clear();
 			restaurantsArrayAdapter.addAll(foundRestaurants);
 			restaurantsArrayAdapter.notifyDataSetChanged();
 		}
+	}
+
+	@Override
+	public void searchRestaurantsFailed(List<Restaurant> result) {
+		// TODO searchRestaurantsFailed
 	}
 
 }

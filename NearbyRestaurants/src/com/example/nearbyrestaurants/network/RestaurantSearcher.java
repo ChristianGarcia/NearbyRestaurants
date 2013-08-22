@@ -8,6 +8,8 @@ public interface RestaurantSearcher {
 
 	void searchRestaurantsInRadius(Double distanceinMiles);
 
-	void updateRestaurantsInformation(List<Restaurant> foundRestaurants);
+	void searchRestaurantsSuccessful(List<Restaurant> foundRestaurants);
+
+	void searchRestaurantsFailed(List<Restaurant> result);
 
 }
