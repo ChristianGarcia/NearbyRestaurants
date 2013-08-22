@@ -2,6 +2,7 @@ package com.example.nearbyrestaurants.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -14,7 +15,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.app.Activity;
 import android.os.AsyncTask;
 
+import com.example.nearbyrestaurants.model.Coordinates;
 import com.example.nearbyrestaurants.model.Restaurant;
+import com.google.gson.Gson;
 
 //TODO Wrap Double in distance to avoid conversion problems
 public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Restaurant>> {
@@ -35,8 +38,9 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 
 		String radiusInMeters = String.valueOf(distancesInMeters[0]);
 
-		GooglePlacesNearbyRequest request = new GooglePlacesNearbyRequest("41.42,2.16", radiusInMeters, true, "restaurant");
+		GooglePlacesNearbyRequest request = new GooglePlacesRestaurantsNearbyRequest("41.42,2.16", radiusInMeters);
 		try {
+			// TODO Page results
 			GooglePlacesResponse places = searchPlaces(request);
 			List<Restaurant> restaurants = placesToRestaurants(places);
 			return restaurants;
@@ -74,12 +78,36 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 			response.getEntity().getContent().close();
 			throw new IOException(statusLine.getReasonPhrase());
 		}
-		return GooglePlacesResponse.fromResponseString(responseString);
+		GooglePlacesResponse gpResponse = googlePlacesResponseFromJSON(responseString);
+		return gpResponse;
+	}
+
+	private GooglePlacesResponse googlePlacesResponseFromJSON(String responseString) {
+		Gson gson = new Gson();
+		GooglePlacesResponse gpResponse = gson.fromJson(responseString, GooglePlacesResponse.class);
+		return gpResponse;
 	}
 
 	private List<Restaurant> placesToRestaurants(GooglePlacesResponse places) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Restaurant> restaurants = new ArrayList<Restaurant>();
+		List<GooglePlace> results = places.getResults();
+		for (GooglePlace result : results) {
+			Restaurant restaurant = restaurantFromGooglePlace(result);
+			restaurants.add(restaurant);
+		}
+		return restaurants;
+	}
+
+	private Restaurant restaurantFromGooglePlace(GooglePlace result) {
+		String id = result.getId();
+		String name = result.getName();
+
+		double latitude = result.getGeometry().getLocation().getLat();
+		double longitude = result.getGeometry().getLocation().getLng();
+		Coordinates coordinates = new Coordinates(latitude, longitude);
+
+		Restaurant restaurant = new Restaurant(id, name, coordinates);
+		return restaurant;
 	}
 
 	private void addResultsInDatabase(List<Restaurant> result) {

@@ -4,19 +4,20 @@ import java.util.List;
 
 public class GooglePlacesResponse {
 
-	private List<GooglePlace> places;
+	private String next_page_token;
 
-	public static GooglePlacesResponse fromResponseString(String responseString) {
-		GooglePlacesResponse response = new GooglePlacesResponse();
-		return response;
-	}
+	private List<GooglePlace> results;
 
-	private GooglePlacesResponse() {
+	public GooglePlacesResponse() {
 
 	}
 
-	public List<GooglePlace> getPlaces() {
-		return places;
+	public String getNext_page_token() {
+		return next_page_token;
+	}
+
+	public List<GooglePlace> getResults() {
+		return results;
 	}
 
 }
