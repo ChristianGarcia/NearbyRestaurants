@@ -14,11 +14,14 @@ public class GooglePlacesNearbyRequest {
 
 	private boolean sensor;
 
-	public GooglePlacesNearbyRequest(String location, String radius, boolean sensor) {
+	private String keyword;
+
+	public GooglePlacesNearbyRequest(String location, String radius, boolean sensor, String keyword) {
 		super();
 		this.location = location;
 		this.radius = radius;
 		this.sensor = sensor;
+		this.keyword = keyword;
 	}
 
 	public String getRequestURLString() throws MalformedURLException {
@@ -27,6 +30,7 @@ public class GooglePlacesNearbyRequest {
 		sb.append("&location=" + location);
 		sb.append("&radius=" + radius);
 		sb.append("&sensor=" + sensor);
+		sb.append("&keyword=" + keyword);
 		return sb.toString();
 	}
 

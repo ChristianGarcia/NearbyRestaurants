@@ -33,9 +33,9 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 	@Override
 	protected List<Restaurant> doInBackground(Double... distancesInMeters) {
 
-		String meters = String.valueOf(distancesInMeters[0]);
+		String radiusInMeters = String.valueOf(distancesInMeters[0]);
 
-		GooglePlacesNearbyRequest request = new GooglePlacesNearbyRequest("41.42,2.16", meters, true);
+		GooglePlacesNearbyRequest request = new GooglePlacesNearbyRequest("41.42,2.16", radiusInMeters, true, "restaurant");
 		try {
 			GooglePlacesResponse places = searchPlaces(request);
 			List<Restaurant> restaurants = placesToRestaurants(places);
