@@ -3,6 +3,8 @@
 
     <string name="app_name">NearbyRestaurants</string>
     <string name="action_search">Search</string>
+    <string name="action_map">Map</string>
+    <string name="action_list">List</string>
     <string name="list_restaurant_empty">You haven\'t searched any restaurant so far.\nClick search again to start.</string>
     <string name="message_offline">The search failed.\nThis is the list of restaurants searched so far</string>
     <string name="message_saved_list">This is the list of restaurants searched so far</string>
@@ -12,5 +14,7 @@
     <string name="title_activity_map">MapActivity</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="maps_offline_message">Could not connect with Google Places server, go to list mode to see all the restaurants found so far.</string>
+    <string name="maps_offline_title">Offline maps not available</string>
 
 </resources>

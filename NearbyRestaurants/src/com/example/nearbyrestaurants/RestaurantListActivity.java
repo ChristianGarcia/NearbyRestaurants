@@ -2,6 +2,7 @@ package com.example.nearbyrestaurants;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +31,8 @@ public class RestaurantListActivity extends RestaurantSearcherActivity {
 		tvOffline = findViewById(R.id.offline_message);
 		configureListView();
 
-		fillListWithSavedRestaurants();
+		updateRestaurantsInfo(getDatabaseRestaurants());
+		showMessageForSavedRestaurants();
 	}
 
 	@Override
@@ -43,7 +45,9 @@ public class RestaurantListActivity extends RestaurantSearcherActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean processed = super.onOptionsItemSelected(item);
 		if (!processed) {
-			// TODO process open map
+			if (item.getItemId() == R.id.action_map) {
+				startActivity(new Intent(this, MapActivity.class));
+			}
 		}
 		return false;
 	}
@@ -56,16 +60,16 @@ public class RestaurantListActivity extends RestaurantSearcherActivity {
 		lvRestaurant.setEmptyView(emptyView);
 	}
 
-	private void fillListWithSavedRestaurants() {
-		List<Restaurant> savedRestaurants = getSavedRestaurants();
-		restaurantsArrayAdapter.setNewRestaurantList(savedRestaurants);
-		showMessageForSavedRestaurants();
+	@Override
+	public void searchRestaurantsSuccessful(List<Restaurant> foundRestaurants) {
+		super.searchRestaurantsSuccessful(foundRestaurants);
+		hideOfflineModeMessage();
 	}
-
 	@Override
 	public void searchRestaurantsFailed(List<Restaurant> result) {
 		showOfflineModeMessage();
-		fillListWithSavedRestaurants();
+		showMessageForSavedRestaurants();
+		updateRestaurantsInfo(getDatabaseRestaurants());
 	}
 
 	private void showOfflineModeMessage() {
@@ -93,14 +97,13 @@ public class RestaurantListActivity extends RestaurantSearcherActivity {
 	@Override
 	void updateRestaurantsInfo(List<Restaurant> foundRestaurants) {
 		if (restaurantsArrayAdapter != null) {
-			hideOfflineModeMessage();
 
 			restaurantsArrayAdapter.setNewRestaurantList(foundRestaurants);
 
 			if (foundRestaurants.isEmpty()) {
 				emptyView.setText(R.string.no_restaurants_found);
+				tvMessage.setVisibility(View.GONE);
 			}
-			tvMessage.setVisibility(View.GONE);
 		}
 	}
 

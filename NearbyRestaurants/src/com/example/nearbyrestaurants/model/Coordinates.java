@@ -1,5 +1,7 @@
 package com.example.nearbyrestaurants.model;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Coordinates {
 
 	private static final int EARTH_RADIUS_IN_METERS = 6371000;

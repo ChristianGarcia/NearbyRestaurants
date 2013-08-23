@@ -67,8 +67,9 @@ public abstract class RestaurantSearcherActivity extends Activity implements Res
 		return false;
 	}
 
-	protected List<Restaurant> getSavedRestaurants() {
+	protected List<Restaurant> getDatabaseRestaurants() {
 		return datasource.getAllRestaurants();
+
 	}
 
 	private void searchRestaurantsInOneMile() {
