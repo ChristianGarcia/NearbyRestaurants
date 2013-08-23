@@ -22,16 +22,10 @@ public class RestaurantsArrayAdapter extends ArrayAdapter<Restaurant> {
 		super(context, R.layout.list_item_restaurant, initialList);
 	}
 
-	@Override
-	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
-		refreshCentralPoint();
-	}
-
-	private void refreshCentralPoint() {
+	public Coordinates refreshCentralPoint() {
 		// TODO refreshCentralPoint
 		centralPoint = new Coordinates(MockValues.LAT, MockValues.LON);
-
+		return centralPoint;
 	}
 
 	@Override

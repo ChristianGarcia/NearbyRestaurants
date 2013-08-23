@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.example.nearbyrestaurants.adapter.RestaurantsArrayAdapter;
+import com.example.nearbyrestaurants.comparator.DistanceToPointComparator;
+import com.example.nearbyrestaurants.model.Coordinates;
 import com.example.nearbyrestaurants.model.Restaurant;
 import com.example.nearbyrestaurants.task.RestaurantSearcher;
 import com.example.nearbyrestaurants.task.SearchRestaurantsAsyncTask;
@@ -96,6 +98,8 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 		if (restaurantsArrayAdapter != null) {
 			restaurantsArrayAdapter.clear();
 			restaurantsArrayAdapter.addAll(foundRestaurants);
+			Coordinates centralPoint = restaurantsArrayAdapter.refreshCentralPoint();
+			restaurantsArrayAdapter.sort(new DistanceToPointComparator(centralPoint));
 			restaurantsArrayAdapter.notifyDataSetChanged();
 		}
 	}

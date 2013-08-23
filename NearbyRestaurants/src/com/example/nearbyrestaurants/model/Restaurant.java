@@ -2,7 +2,7 @@ package com.example.nearbyrestaurants.model;
 
 public class Restaurant {
 
-	//TODO Refactor
+	// TODO Refactor
 	private static final double METERS_IN_ONE_MILE = 1609.344;
 
 	private String id;
@@ -32,5 +32,18 @@ public class Restaurant {
 
 	public double getMilesFrom(Coordinates point) {
 		return this.coordinates.metersTo(point) / METERS_IN_ONE_MILE;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Restaurant) {
+			return this.id.equals(((Restaurant) o).id);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
 	}
 }
