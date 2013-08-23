@@ -1,7 +1,7 @@
 NearbyRestaurants
 =================
 
-This is a solution for a test. It uses the [Google Places][1] API and the [Google Maps Android] API to show nearby restaurants.
+This is a solution for a test. It uses the [Google Places][1] API and the [Google Maps Android][2] API to show nearby restaurants.
 
 The application consists of 2 screens:
 1. A list of nearby restaurants within 1 mile radius
