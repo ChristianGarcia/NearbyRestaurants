@@ -57,7 +57,8 @@ public class RestaurantsArrayAdapter extends ArrayAdapter<Restaurant> {
 		Restaurant restaurant = getItem(position);
 		if (restaurant != null) {
 			viewHolder.tvName.setText(restaurant.getName());
-			viewHolder.tvDistance.setText(restaurant.getMilesFrom(centralPoint) + " miles");
+			double miles = restaurant.getDistanceFrom(centralPoint).getMiles();
+			viewHolder.tvDistance.setText(miles + " miles");
 		}
 		return convertView;
 	}

@@ -1,9 +1,8 @@
 package com.example.nearbyrestaurants.model;
 
-public class Restaurant {
+import com.example.nearbyrestaurants.model.Distance.DistanceMagnitude;
 
-	// TODO Refactor
-	private static final double METERS_IN_ONE_MILE = 1609.344;
+public class Restaurant {
 
 	private String id;
 
@@ -30,8 +29,10 @@ public class Restaurant {
 		return coordinates;
 	}
 
-	public double getMilesFrom(Coordinates point) {
-		return this.coordinates.metersTo(point) / METERS_IN_ONE_MILE;
+	public Distance getDistanceFrom(Coordinates point) {
+		double distanceInMeters = this.coordinates.metersTo(point);
+		Distance distance = new Distance(distanceInMeters, DistanceMagnitude.METER);
+		return distance;
 	}
 
 	@Override

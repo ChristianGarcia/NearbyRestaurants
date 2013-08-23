@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.example.nearbyrestaurants.adapter.RestaurantsArrayAdapter;
 import com.example.nearbyrestaurants.database.RestaurantDataSource;
+import com.example.nearbyrestaurants.model.Distance;
+import com.example.nearbyrestaurants.model.Distance.DistanceMagnitude;
 import com.example.nearbyrestaurants.model.Restaurant;
 import com.example.nearbyrestaurants.task.RestaurantSearcher;
 import com.example.nearbyrestaurants.task.SearchRestaurantsAsyncTask;
@@ -23,9 +25,6 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 	private static final double RADIUS_IN_MILES = 1.0;
 
 	private TextView tvMessage;
-
-	// TODO Refactor
-	private static final double METERS_IN_ONE_MILE = 1609.344;
 
 	private SearchRestaurantsAsyncTask searchRestaurantsTask;
 
@@ -84,7 +83,8 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 	}
 
 	private void searchRestaurantsInOneMile() {
-		searchRestaurantsInRadius(RADIUS_IN_MILES * METERS_IN_ONE_MILE);
+		Distance distance = new Distance(RADIUS_IN_MILES, DistanceMagnitude.MILE);
+		searchRestaurantsInRadius(distance);
 	}
 
 	private void configureListView() {
@@ -106,9 +106,9 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 	}
 
 	@Override
-	public void searchRestaurantsInRadius(Double distanceInMeters) {
+	public void searchRestaurantsInRadius(Distance distance) {
 		searchRestaurantsTask = new SearchRestaurantsAsyncTask(this);
-		searchRestaurantsTask.execute(distanceInMeters);
+		searchRestaurantsTask.execute(distance);
 
 	}
 

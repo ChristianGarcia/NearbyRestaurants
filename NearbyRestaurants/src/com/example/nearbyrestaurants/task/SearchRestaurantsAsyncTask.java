@@ -22,11 +22,11 @@ import com.example.nearbyrestaurants.googleplaces.GooglePlacesResponse;
 import com.example.nearbyrestaurants.googleplaces.GooglePlacesRestaurantsNearbyRequest;
 import com.example.nearbyrestaurants.mock.MockValues;
 import com.example.nearbyrestaurants.model.Coordinates;
+import com.example.nearbyrestaurants.model.Distance;
 import com.example.nearbyrestaurants.model.Restaurant;
 import com.google.gson.Gson;
 
-//TODO Wrap Double in Distance to avoid conversion problems
-public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Restaurant>> {
+public class SearchRestaurantsAsyncTask extends AsyncTask<Distance, Void, List<Restaurant>> {
 
 	private Activity launcherActivity;
 
@@ -40,9 +40,9 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 	}
 
 	@Override
-	protected List<Restaurant> doInBackground(Double... distancesInMeters) {
+	protected List<Restaurant> doInBackground(Distance... distances) {
 		List<Restaurant> restaurants = new ArrayList<Restaurant>();
-		double radiusInMeters = distancesInMeters[0];
+		double radiusInMeters = distances[0].getMeters();
 
 		GooglePlacesNearbyRequest request = new GooglePlacesRestaurantsNearbyRequest("41.42,2.16",
 				String.valueOf((int) radiusInMeters));
