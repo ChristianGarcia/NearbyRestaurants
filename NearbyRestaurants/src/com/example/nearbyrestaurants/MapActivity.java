@@ -28,33 +28,24 @@ public class MapActivity extends RestaurantSearcherActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
 
-		centerInMyPosition();
-	}
-
-	private void centerInMyPosition() {
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 
-		Coordinates userCoords = readUserPosition();
-
-		LatLng userPosition = new LatLng(userCoords.getLatitude(), userCoords.getLongitude());
-
-		addUserMarker(userPosition);
-
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(userPosition, 10));
-
-		map.animateCamera(CameraUpdateFactory.zoomTo(13), 2000, null);
+		Coordinates userPosition = readUserCoordinates();
+		LatLng userLatLng = coordinatesToLatLng(userPosition);
+		
+		initMap(userLatLng);
 
 	}
 
-	private void addUserMarker(LatLng userPosition) {
-		MarkerOptions userPositionMarker = new MarkerOptions().position(userPosition)
-																.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position));
-		map.addMarker(userPositionMarker);
+	private LatLng coordinatesToLatLng(Coordinates coordinates) {
+		LatLng userPosition = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
+		return userPosition;
 	}
 
-	private Coordinates readUserPosition() {
-		// TODO readCentralPoint
-		return new Coordinates(MockValues.LAT, MockValues.LON);
+	private Coordinates readUserCoordinates() {
+		// TODO read local
+		Coordinates userCoords = new Coordinates(MockValues.LAT, MockValues.LON);
+		return userCoords;
 	}
 
 	@Override
@@ -82,17 +73,31 @@ public class MapActivity extends RestaurantSearcherActivity {
 
 	@Override
 	void updateRestaurantsInfo(List<Restaurant> foundRestaurants) {
+
+		Coordinates userPosition = readUserCoordinates();
+		LatLng userLatLng = coordinatesToLatLng(userPosition);
+
+		initMap(userLatLng);
+
 		for (Restaurant restaurant : foundRestaurants) {
-			addRestaurantMarker(restaurant);
+			addRestaurantMarker(restaurant, userPosition);
 		}
 	}
 
-	private void addRestaurantMarker(Restaurant restaurant) {
+	private void initMap(LatLng userLatLng) {
+		map.clear();
+		MarkerOptions userPositionMarker = new MarkerOptions().position(userLatLng)
+																.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position));
+		map.addMarker(userPositionMarker);
+		map.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 13), 2000, null);
+	}
+
+	private void addRestaurantMarker(Restaurant restaurant, Coordinates userPosition) {
 		Coordinates coordinates = restaurant.getCoordinates();
 		double latitude = coordinates.getLatitude();
 		double longitude = coordinates.getLongitude();
 		LatLng position = new LatLng(latitude, longitude);
-		Distance distance = restaurant.getDistanceFrom(readUserPosition());
+		Distance distance = restaurant.getDistanceFrom(userPosition);
 		String distanceText = distance.getMiles() + " miles";
 
 		MarkerOptions marker = new MarkerOptions().position(position)
