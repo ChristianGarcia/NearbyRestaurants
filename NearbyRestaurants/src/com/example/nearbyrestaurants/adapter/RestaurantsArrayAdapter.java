@@ -10,12 +10,28 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.nearbyrestaurants.R;
+import com.example.nearbyrestaurants.mock.MockValues;
+import com.example.nearbyrestaurants.model.Coordinates;
 import com.example.nearbyrestaurants.model.Restaurant;
 
 public class RestaurantsArrayAdapter extends ArrayAdapter<Restaurant> {
 
+	private Coordinates centralPoint;
+
 	public RestaurantsArrayAdapter(Context context, List<Restaurant> initialList) {
 		super(context, R.layout.list_item_restaurant, initialList);
+	}
+
+	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+		refreshCentralPoint();
+	}
+
+	private void refreshCentralPoint() {
+		// TODO refreshCentralPoint
+		centralPoint = new Coordinates(MockValues.LAT, MockValues.LON);
+
 	}
 
 	@Override
@@ -38,7 +54,7 @@ public class RestaurantsArrayAdapter extends ArrayAdapter<Restaurant> {
 		Restaurant restaurant = getItem(position);
 		if (restaurant != null) {
 			viewHolder.tvName.setText(restaurant.getName());
-			viewHolder.tvDistance.setText(restaurant.getDistance() + " miles");
+			viewHolder.tvDistance.setText(restaurant.getMilesFrom(centralPoint) + " miles");
 		}
 		return convertView;
 	}

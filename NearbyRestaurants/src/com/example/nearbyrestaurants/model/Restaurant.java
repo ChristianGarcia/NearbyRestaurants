@@ -1,6 +1,10 @@
 package com.example.nearbyrestaurants.model;
 
 public class Restaurant {
+
+	//TODO Refactor
+	private static final double METERS_IN_ONE_MILE = 1609.344;
+
 	private String id;
 
 	private String name;
@@ -26,8 +30,7 @@ public class Restaurant {
 		return coordinates;
 	}
 
-	public String getDistance() {
-		// TODO getDistance
-		return null;
+	public double getMilesFrom(Coordinates point) {
+		return this.coordinates.metersTo(point) / METERS_IN_ONE_MILE;
 	}
 }

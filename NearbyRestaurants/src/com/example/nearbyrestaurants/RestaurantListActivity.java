@@ -18,6 +18,8 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 
 	private static final double RADIUS_IN_MILES = 1.0;
 
+	// TODO Refactor
+
 	private static final double METERS_IN_ONE_MILE = 1609.344;
 
 	private SearchRestaurantsAsyncTask searchRestaurantsTask;

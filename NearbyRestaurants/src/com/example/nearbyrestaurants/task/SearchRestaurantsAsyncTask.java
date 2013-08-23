@@ -14,6 +14,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.nearbyrestaurants.googleplaces.GooglePlace;
 import com.example.nearbyrestaurants.googleplaces.GooglePlacesNearbyRequest;
@@ -76,6 +77,7 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 		HttpResponse response;
 		String responseString = null;
 		String uri = request.getRequestURLString();
+		Log.d("NR:Network", String.format("Requesting places URI: %s", uri));
 		response = httpclient.execute(new HttpGet(uri));
 		StatusLine statusLine = response.getStatusLine();
 		if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
@@ -120,7 +122,7 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 	}
 
 	private void addResultsInDatabase(List<Restaurant> result) {
-		// TODO Auto-generated method stub
+		// TODO addResultsInDatabase
 
 	}
 
