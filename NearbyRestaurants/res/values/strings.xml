@@ -3,6 +3,11 @@
 
     <string name="app_name">NearbyRestaurants</string>
     <string name="action_search">Search</string>
-    <string name="list_restaurant_empty">You haven\'t searched any restaurant so far. Click search again to start.</string>
+    <string name="list_restaurant_empty">You haven\'t searched any restaurant so far.\nClick search again to start.</string>
+    <string name="message_offline">The search failed.\nThis is the list of restaurants searched so far</string>
+    <string name="message_saved_list">This is the list of restaurants searched so far</string>
+    <string name="message_nearby">This is the list of nearby restaurants</string>
+    <string name="no_restaurants_found">No restaurants found</string>
+    <string name="offline_mode">Offline mode</string>
 
 </resources>

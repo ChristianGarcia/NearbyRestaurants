@@ -7,7 +7,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.nearbyrestaurants.adapter.RestaurantsArrayAdapter;
 import com.example.nearbyrestaurants.comparator.DistanceToPointComparator;
@@ -20,6 +22,8 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 
 	private static final double RADIUS_IN_MILES = 1.0;
 
+	private TextView tvMessage;
+
 	// TODO Refactor
 	private static final double METERS_IN_ONE_MILE = 1609.344;
 
@@ -27,21 +31,24 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 
 	private RestaurantsArrayAdapter restaurantsArrayAdapter;
 
+	private TextView emptyView;
+
+	private View tvOffline;
+
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_restaurant_list);
-
+		tvMessage = (TextView) findViewById(R.id.message);
+		tvOffline = findViewById(R.id.offline_message);
 		configureListView();
 
 		searchRestaurantsTask = (SearchRestaurantsAsyncTask) getLastNonConfigurationInstance();
 		if (searchRestaurantsTask != null) {
 			searchRestaurantsTask.setLauncherActivity(this);
 		}
-		showMessageForRestaurantsSearchedSoFar();
 		fillListWithSavedRestaurants();
-
 	}
 
 	@Override
@@ -80,16 +87,18 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 		ListView lvRestaurant = (ListView) findViewById(R.id.listView);
 		restaurantsArrayAdapter = new RestaurantsArrayAdapter(this);
 		lvRestaurant.setAdapter(restaurantsArrayAdapter);
-		lvRestaurant.setEmptyView(findViewById(R.id.empty));
+		emptyView = (TextView) findViewById(R.id.empty);
+		lvRestaurant.setEmptyView(emptyView);
 	}
 
 	private void fillListWithSavedRestaurants() {
 		restaurantsArrayAdapter.clear();
-		restaurantsArrayAdapter.addAll(getCachedRestaurants());
+		restaurantsArrayAdapter.addAll(getSavedRestaurants());
+		showMessageForSavedRestaurants();
 	}
 
-	private List<Restaurant> getCachedRestaurants() {
-		// TODO getCachedRestaurants
+	private List<Restaurant> getSavedRestaurants() {
+		// TODO getSavedRestaurants
 		return new ArrayList<Restaurant>();
 	}
 
@@ -103,11 +112,20 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 	@Override
 	public void searchRestaurantsSuccessful(List<Restaurant> foundRestaurants) {
 		if (restaurantsArrayAdapter != null) {
+			hideOfflineModeMessage();
+
 			restaurantsArrayAdapter.clear();
 			restaurantsArrayAdapter.addAll(foundRestaurants);
+
 			Coordinates centralPoint = restaurantsArrayAdapter.refreshCentralPoint();
 			restaurantsArrayAdapter.sort(new DistanceToPointComparator(centralPoint));
+
 			restaurantsArrayAdapter.notifyDataSetChanged();
+
+			if (foundRestaurants.isEmpty()) {
+				emptyView.setText(R.string.no_restaurants_found);
+			}
+			tvMessage.setVisibility(View.GONE);
 		}
 	}
 
@@ -118,13 +136,25 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 	}
 
 	private void showOfflineModeMessage() {
-		// TODO showOfflineModeMessage
+		tvOffline.setVisibility(View.VISIBLE);
+	}
+
+	private void hideOfflineModeMessage() {
+		tvOffline.setVisibility(View.GONE);
 
 	}
 
-	private void showMessageForRestaurantsSearchedSoFar() {
-		// TODO showMessageForRestaurantsSearchedSoFar if( adapter not empty)
+	private void showMessageForSavedRestaurants() {
+		showMessage(R.string.message_saved_list);
+	}
 
+	private void showMessage(int messageId) {
+		if (!restaurantsArrayAdapter.isEmpty()) {
+			tvMessage.setText(messageId);
+			tvMessage.setVisibility(View.VISIBLE);
+		} else {
+			tvMessage.setVisibility(View.GONE);
+		}
 	}
 
 }
