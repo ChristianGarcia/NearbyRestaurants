@@ -2,18 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="@dimen/list_element_horizontal_margin"
+    android:paddingRight="@dimen/list_element_horizontal_margin"
+    android:paddingTop="@dimen/list_element_vertical_margin"
+    android:paddingBottom="@dimen/list_element_vertical_margin"
     android:orientation="vertical" >
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Restaurant"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/tvDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="0.0303093039 miles"
+        android:textColor="#666666"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>
