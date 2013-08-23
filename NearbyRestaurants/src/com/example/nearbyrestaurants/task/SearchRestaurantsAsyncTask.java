@@ -20,11 +20,12 @@ import com.example.nearbyrestaurants.googleplaces.GooglePlace;
 import com.example.nearbyrestaurants.googleplaces.GooglePlacesNearbyRequest;
 import com.example.nearbyrestaurants.googleplaces.GooglePlacesResponse;
 import com.example.nearbyrestaurants.googleplaces.GooglePlacesRestaurantsNearbyRequest;
+import com.example.nearbyrestaurants.mock.MockValues;
 import com.example.nearbyrestaurants.model.Coordinates;
 import com.example.nearbyrestaurants.model.Restaurant;
 import com.google.gson.Gson;
 
-//TODO Wrap Double in distance to avoid conversion problems
+//TODO Wrap Double in Distance to avoid conversion problems
 public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Restaurant>> {
 
 	private Activity launcherActivity;
@@ -41,9 +42,10 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 	@Override
 	protected List<Restaurant> doInBackground(Double... distancesInMeters) {
 		List<Restaurant> restaurants = new ArrayList<Restaurant>();
-		String radiusInMeters = String.valueOf(distancesInMeters[0]);
+		double radiusInMeters = distancesInMeters[0];
 
-		GooglePlacesNearbyRequest request = new GooglePlacesRestaurantsNearbyRequest("41.42,2.16", radiusInMeters);
+		GooglePlacesNearbyRequest request = new GooglePlacesRestaurantsNearbyRequest("41.42,2.16",
+				String.valueOf((int) radiusInMeters));
 		try {
 			GooglePlacesResponse places;
 			String nextPageToken = "";
@@ -51,12 +53,31 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 				request.setPageToken(nextPageToken);
 				places = searchPlaces(request);
 				nextPageToken = places.getNext_page_token();
-				restaurants.addAll(placesToRestaurants(places));
+				List<Restaurant> pageRestaurants = placesToRestaurants(places);
+				pageRestaurants = discardFurtherThan(pageRestaurants, radiusInMeters);
+				restaurants.addAll(pageRestaurants);
 			} while (nextPageToken != null);
 			return restaurants;
 		} catch (IOException e) {
 			return null;
 		}
+	}
+
+	private List<Restaurant> discardFurtherThan(List<Restaurant> pageRestaurants, double radiusInMeters) {
+		List<Restaurant> pageRestaurantsInRadius = new ArrayList<Restaurant>();
+		Coordinates centralPoint = readCentralPoint();
+		for (Restaurant pageRestaurant : pageRestaurants) {
+			if (pageRestaurant.getCoordinates().metersTo(centralPoint) < radiusInMeters) {
+				pageRestaurantsInRadius.add(pageRestaurant);
+			}
+		}
+		return pageRestaurantsInRadius;
+
+	}
+
+	private Coordinates readCentralPoint() {
+		// TODO readCentralPoint
+		return new Coordinates(MockValues.LAT, MockValues.LON);
 	}
 
 	@Override
