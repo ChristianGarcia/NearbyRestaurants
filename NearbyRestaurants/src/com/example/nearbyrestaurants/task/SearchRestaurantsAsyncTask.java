@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.nearbyrestaurants.database.RestaurantDataSource;
 import com.example.nearbyrestaurants.googleplaces.GooglePlace;
 import com.example.nearbyrestaurants.googleplaces.GooglePlacesNearbyRequest;
 import com.example.nearbyrestaurants.googleplaces.GooglePlacesResponse;
@@ -67,7 +68,8 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Distance, Void, List<R
 		List<Restaurant> pageRestaurantsInRadius = new ArrayList<Restaurant>();
 		Coordinates centralPoint = readCentralPoint();
 		for (Restaurant pageRestaurant : pageRestaurants) {
-			if (pageRestaurant.getCoordinates().metersTo(centralPoint) < radiusInMeters) {
+			if (pageRestaurant.getCoordinates()
+								.metersTo(centralPoint) < radiusInMeters) {
 				pageRestaurantsInRadius.add(pageRestaurant);
 			}
 		}
@@ -85,11 +87,21 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Distance, Void, List<R
 		if (launcherActivity != null && launcherActivity instanceof RestaurantSearcher) {
 			RestaurantSearcher searcher = (RestaurantSearcher) launcherActivity;
 			if (result != null) {
+				addResultsInDatabase(result);
 				searcher.searchRestaurantsSuccessful(result);
 			} else {
 				searcher.searchRestaurantsFailed(result);
 			}
 		}
+	}
+
+	private void addResultsInDatabase(List<Restaurant> result) {
+		RestaurantDataSource datasource = new RestaurantDataSource(launcherActivity);
+		datasource.open();
+		for (Restaurant restaurant : result) {
+			datasource.createRestaurant(restaurant);
+		}
+		datasource.close();
 	}
 
 	private GooglePlacesResponse searchPlaces(GooglePlacesNearbyRequest request) throws IOException {
@@ -102,11 +114,14 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Distance, Void, List<R
 		StatusLine statusLine = response.getStatusLine();
 		if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			response.getEntity().writeTo(out);
+			response.getEntity()
+					.writeTo(out);
 			out.close();
 			responseString = out.toString();
 		} else {
-			response.getEntity().getContent().close();
+			response.getEntity()
+					.getContent()
+					.close();
 			throw new IOException(statusLine.getReasonPhrase());
 		}
 		GooglePlacesResponse gpResponse = googlePlacesResponseFromJSON(responseString);
@@ -133,13 +148,16 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Distance, Void, List<R
 		String id = result.getId();
 		String name = result.getName();
 
-		double latitude = result.getGeometry().getLocation().getLat();
-		double longitude = result.getGeometry().getLocation().getLng();
+		double latitude = result.getGeometry()
+								.getLocation()
+								.getLat();
+		double longitude = result.getGeometry()
+									.getLocation()
+									.getLng();
 		Coordinates coordinates = new Coordinates(latitude, longitude);
 
 		Restaurant restaurant = new Restaurant(id, name, coordinates);
 		return restaurant;
 	}
-
 
 }
