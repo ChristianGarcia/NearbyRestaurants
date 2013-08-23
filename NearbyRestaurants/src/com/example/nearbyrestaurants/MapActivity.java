@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.nearbyrestaurants.mock.MockValues;
+import com.example.nearbyrestaurants.location.LastLocationProvider;
 import com.example.nearbyrestaurants.model.Coordinates;
 import com.example.nearbyrestaurants.model.Distance;
 import com.example.nearbyrestaurants.model.Restaurant;
@@ -34,6 +34,7 @@ public class MapActivity extends RestaurantSearcherActivity {
 		LatLng userLatLng = coordinatesToLatLng(userPosition);
 		
 		initMap(userLatLng);
+		updateRestaurantsInfo(getDatabaseRestaurants());
 
 	}
 
@@ -43,9 +44,7 @@ public class MapActivity extends RestaurantSearcherActivity {
 	}
 
 	private Coordinates readUserCoordinates() {
-		// TODO read local
-		Coordinates userCoords = new Coordinates(MockValues.LAT, MockValues.LON);
-		return userCoords;
+		return new LastLocationProvider().getLastKnownLocation(this);
 	}
 
 	@Override

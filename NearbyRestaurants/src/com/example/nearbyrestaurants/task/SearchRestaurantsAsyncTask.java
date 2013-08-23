@@ -21,7 +21,7 @@ import com.example.nearbyrestaurants.googleplaces.GooglePlace;
 import com.example.nearbyrestaurants.googleplaces.GooglePlacesNearbyRequest;
 import com.example.nearbyrestaurants.googleplaces.GooglePlacesResponse;
 import com.example.nearbyrestaurants.googleplaces.GooglePlacesRestaurantsNearbyRequest;
-import com.example.nearbyrestaurants.mock.MockValues;
+import com.example.nearbyrestaurants.location.LastLocationProvider;
 import com.example.nearbyrestaurants.model.Coordinates;
 import com.example.nearbyrestaurants.model.Distance;
 import com.example.nearbyrestaurants.model.Restaurant;
@@ -44,8 +44,11 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Distance, Void, List<R
 	protected List<Restaurant> doInBackground(Distance... distances) {
 		List<Restaurant> restaurants = new ArrayList<Restaurant>();
 		double radiusInMeters = distances[0].getMeters();
-
-		GooglePlacesNearbyRequest request = new GooglePlacesRestaurantsNearbyRequest("41.42,2.16",
+		Coordinates userLocation = readCentralPoint();
+		double latitude = userLocation.getLatitude();
+		double longitude = userLocation.getLongitude();
+		String location = latitude + "," + longitude;
+		GooglePlacesNearbyRequest request = new GooglePlacesRestaurantsNearbyRequest(location,
 				String.valueOf((int) radiusInMeters));
 		try {
 			GooglePlacesResponse places;
@@ -78,8 +81,7 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Distance, Void, List<R
 	}
 
 	private Coordinates readCentralPoint() {
-		// TODO readCentralPoint
-		return new Coordinates(MockValues.LAT, MockValues.LON);
+		return new LastLocationProvider().getLastKnownLocation(launcherActivity);
 	}
 
 	@Override

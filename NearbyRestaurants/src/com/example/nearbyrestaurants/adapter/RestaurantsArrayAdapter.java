@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.example.nearbyrestaurants.R;
 import com.example.nearbyrestaurants.comparator.DistanceToPointComparator;
-import com.example.nearbyrestaurants.mock.MockValues;
+import com.example.nearbyrestaurants.location.LastLocationProvider;
 import com.example.nearbyrestaurants.model.Coordinates;
 import com.example.nearbyrestaurants.model.Restaurant;
 
@@ -21,19 +21,17 @@ public class RestaurantsArrayAdapter extends ArrayAdapter<Restaurant> {
 
 	public RestaurantsArrayAdapter(Context context) {
 		super(context, R.layout.list_item_restaurant);
-		refreshCentralPoint();
+		centralPoint = readUserLocation();
 	}
 
-	private Coordinates refreshCentralPoint() {
-		// TODO refreshCentralPoint
-		centralPoint = new Coordinates(MockValues.LAT, MockValues.LON);
-		return centralPoint;
+	private Coordinates readUserLocation() {
+		return new LastLocationProvider().getLastKnownLocation(getContext());
 	}
 
 	public void setNewRestaurantList(List<Restaurant> restaurants) {
 		this.clear();
 		this.addAll(restaurants);
-		Coordinates centralPoint = this.refreshCentralPoint();
+		Coordinates centralPoint = this.readUserLocation();
 		this.sort(new DistanceToPointComparator(centralPoint));
 	}
 
@@ -57,7 +55,8 @@ public class RestaurantsArrayAdapter extends ArrayAdapter<Restaurant> {
 		Restaurant restaurant = getItem(position);
 		if (restaurant != null) {
 			viewHolder.tvName.setText(restaurant.getName());
-			double miles = restaurant.getDistanceFrom(centralPoint).getMiles();
+			double miles = restaurant.getDistanceFrom(centralPoint)
+										.getMiles();
 			viewHolder.tvDistance.setText(miles + " miles");
 		}
 		return convertView;
