@@ -65,8 +65,10 @@ public class RestaurantListActivity extends RestaurantSearcherActivity {
 		super.searchRestaurantsSuccessful(foundRestaurants);
 		hideOfflineModeMessage();
 	}
+
 	@Override
 	public void searchRestaurantsFailed(List<Restaurant> result) {
+		super.searchRestaurantsFailed(result);
 		showOfflineModeMessage();
 		showMessageForSavedRestaurants();
 		updateRestaurantsInfo(getDatabaseRestaurants());

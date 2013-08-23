@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.example.nearbyrestaurants.database.RestaurantDataSource;
 import com.example.nearbyrestaurants.model.Distance;
@@ -20,6 +21,8 @@ public abstract class RestaurantSearcherActivity extends Activity implements Res
 
 	private SearchRestaurantsAsyncTask searchRestaurantsTask;
 
+	private MenuItem refreshItem;
+
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public abstract class RestaurantSearcherActivity extends Activity implements Res
 
 		datasource = new RestaurantDataSource(this);
 		datasource.open();
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	}
 
 	@Override
@@ -61,6 +65,8 @@ public abstract class RestaurantSearcherActivity extends Activity implements Res
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.action_search) {
+			refreshItem = item;
+			showProgress();
 			searchRestaurantsInOneMile();
 			return true;
 		}
@@ -79,9 +85,15 @@ public abstract class RestaurantSearcherActivity extends Activity implements Res
 
 	@Override
 	public void searchRestaurantsSuccessful(List<Restaurant> foundRestaurants) {
-		addResultsInDatabase(foundRestaurants);
+		hideProgress();
 		updateRestaurantsInfo(foundRestaurants);
 	}
+
+
+
+	@Override
+	public void searchRestaurantsFailed(List<Restaurant> result) {
+		hideProgress();	}
 
 	abstract void updateRestaurantsInfo(List<Restaurant> foundRestaurants);
 
@@ -91,10 +103,15 @@ public abstract class RestaurantSearcherActivity extends Activity implements Res
 		searchRestaurantsTask.execute(distance);
 	}
 
-	private void addResultsInDatabase(List<Restaurant> result) {
-		for (Restaurant restaurant : result) {
-			datasource.createRestaurant(restaurant);
-		}
+	private void showProgress() {
+		refreshItem.setEnabled(false);
+		setProgressBarIndeterminateVisibility(true);
+	}
+
+	private void hideProgress() {
+		refreshItem.setEnabled(true);
+		setProgressBarIndeterminateVisibility(false);
+
 	}
 
 }
