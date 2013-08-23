@@ -32,7 +32,7 @@ public class RestaurantListActivity extends RestaurantSearcherActivity {
 		configureListView();
 
 		updateRestaurantsInfo(getDatabaseRestaurants());
-		showMessageForSavedRestaurants();
+		showMessage(R.string.message_saved_list);
 	}
 
 	@Override
@@ -63,28 +63,16 @@ public class RestaurantListActivity extends RestaurantSearcherActivity {
 	@Override
 	public void searchRestaurantsSuccessful(List<Restaurant> foundRestaurants) {
 		super.searchRestaurantsSuccessful(foundRestaurants);
-		hideOfflineModeMessage();
+		tvOffline.setVisibility(View.GONE);
+		showMessage(R.string.message_restaurants_near);
 	}
 
 	@Override
 	public void searchRestaurantsFailed(List<Restaurant> result) {
 		super.searchRestaurantsFailed(result);
-		showOfflineModeMessage();
-		showMessageForSavedRestaurants();
-		updateRestaurantsInfo(getDatabaseRestaurants());
-	}
-
-	private void showOfflineModeMessage() {
 		tvOffline.setVisibility(View.VISIBLE);
-	}
-
-	private void hideOfflineModeMessage() {
-		tvOffline.setVisibility(View.GONE);
-
-	}
-
-	private void showMessageForSavedRestaurants() {
 		showMessage(R.string.message_saved_list);
+		updateRestaurantsInfo(getDatabaseRestaurants());
 	}
 
 	private void showMessage(int messageId) {
