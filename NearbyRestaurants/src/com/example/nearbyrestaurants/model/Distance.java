@@ -1,5 +1,7 @@
 package com.example.nearbyrestaurants.model;
 
+import java.util.Locale;
+
 public class Distance {
 
 	public Distance(double amount, DistanceMagnitude magnitude) {
@@ -22,8 +24,9 @@ public class Distance {
 		return this.meters;
 	}
 
-	public double getMiles() {
-		return meters / DistanceMagnitude.MILE.inMeters;
+	public String getMilesText() {
+		double miles = meters / DistanceMagnitude.MILE.inMeters;
+		return String.format(new Locale("en", "gb"), "%.2f miles", miles);
 	}
 
 }

@@ -97,7 +97,7 @@ public class MapActivity extends RestaurantSearcherActivity {
 		double longitude = coordinates.getLongitude();
 		LatLng position = new LatLng(latitude, longitude);
 		Distance distance = restaurant.getDistanceFrom(userPosition);
-		String distanceText = distance.getMiles() + " miles";
+		String distanceText = distance.getMilesText();
 
 		MarkerOptions marker = new MarkerOptions().position(position)
 													.title(restaurant.getName())

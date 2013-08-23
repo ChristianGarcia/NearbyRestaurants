@@ -13,6 +13,7 @@ import com.example.nearbyrestaurants.R;
 import com.example.nearbyrestaurants.comparator.DistanceToPointComparator;
 import com.example.nearbyrestaurants.location.LastLocationProvider;
 import com.example.nearbyrestaurants.model.Coordinates;
+import com.example.nearbyrestaurants.model.Distance;
 import com.example.nearbyrestaurants.model.Restaurant;
 
 public class RestaurantsArrayAdapter extends ArrayAdapter<Restaurant> {
@@ -55,9 +56,8 @@ public class RestaurantsArrayAdapter extends ArrayAdapter<Restaurant> {
 		Restaurant restaurant = getItem(position);
 		if (restaurant != null) {
 			viewHolder.tvName.setText(restaurant.getName());
-			double miles = restaurant.getDistanceFrom(centralPoint)
-										.getMiles();
-			viewHolder.tvDistance.setText(miles + " miles");
+			Distance distance = restaurant.getDistanceFrom(centralPoint);
+			viewHolder.tvDistance.setText(distance.getMilesText());
 		}
 		return convertView;
 	}
