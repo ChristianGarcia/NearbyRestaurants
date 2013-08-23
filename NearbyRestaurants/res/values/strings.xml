@@ -9,5 +9,8 @@
     <string name="message_nearby">This is the list of nearby restaurants</string>
     <string name="no_restaurants_found">No restaurants found</string>
     <string name="offline_mode">Offline mode</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
