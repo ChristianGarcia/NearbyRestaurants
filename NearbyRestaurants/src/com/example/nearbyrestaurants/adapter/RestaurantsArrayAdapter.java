@@ -1,5 +1,7 @@
 package com.example.nearbyrestaurants.adapter;
 
+import java.util.List;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.nearbyrestaurants.R;
+import com.example.nearbyrestaurants.comparator.DistanceToPointComparator;
 import com.example.nearbyrestaurants.mock.MockValues;
 import com.example.nearbyrestaurants.model.Coordinates;
 import com.example.nearbyrestaurants.model.Restaurant;
@@ -18,12 +21,20 @@ public class RestaurantsArrayAdapter extends ArrayAdapter<Restaurant> {
 
 	public RestaurantsArrayAdapter(Context context) {
 		super(context, R.layout.list_item_restaurant);
+		refreshCentralPoint();
 	}
 
-	public Coordinates refreshCentralPoint() {
+	private Coordinates refreshCentralPoint() {
 		// TODO refreshCentralPoint
 		centralPoint = new Coordinates(MockValues.LAT, MockValues.LON);
 		return centralPoint;
+	}
+
+	public void setNewRestaurantList(List<Restaurant> restaurants) {
+		this.clear();
+		this.addAll(restaurants);
+		Coordinates centralPoint = this.refreshCentralPoint();
+		this.sort(new DistanceToPointComparator(centralPoint));
 	}
 
 	@Override

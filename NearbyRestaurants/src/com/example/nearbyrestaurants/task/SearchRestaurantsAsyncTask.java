@@ -82,7 +82,6 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 
 	@Override
 	protected void onPostExecute(List<Restaurant> result) {
-		addResultsInDatabase(result);
 		if (launcherActivity != null && launcherActivity instanceof RestaurantSearcher) {
 			RestaurantSearcher searcher = (RestaurantSearcher) launcherActivity;
 			if (result != null) {
@@ -142,9 +141,5 @@ public class SearchRestaurantsAsyncTask extends AsyncTask<Double, Void, List<Res
 		return restaurant;
 	}
 
-	private void addResultsInDatabase(List<Restaurant> result) {
-		// TODO addResultsInDatabase
-
-	}
 
 }

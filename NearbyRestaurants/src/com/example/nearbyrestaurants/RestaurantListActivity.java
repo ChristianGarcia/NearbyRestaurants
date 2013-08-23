@@ -1,6 +1,5 @@
 package com.example.nearbyrestaurants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -12,13 +11,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.nearbyrestaurants.adapter.RestaurantsArrayAdapter;
-import com.example.nearbyrestaurants.comparator.DistanceToPointComparator;
-import com.example.nearbyrestaurants.model.Coordinates;
+import com.example.nearbyrestaurants.database.RestaurantDataSource;
 import com.example.nearbyrestaurants.model.Restaurant;
 import com.example.nearbyrestaurants.task.RestaurantSearcher;
 import com.example.nearbyrestaurants.task.SearchRestaurantsAsyncTask;
 
 public class RestaurantListActivity extends Activity implements RestaurantSearcher {
+
+	private RestaurantDataSource datasource;
 
 	private static final double RADIUS_IN_MILES = 1.0;
 
@@ -48,6 +48,10 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 		if (searchRestaurantsTask != null) {
 			searchRestaurantsTask.setLauncherActivity(this);
 		}
+
+		datasource = new RestaurantDataSource(this);
+		datasource.open();
+
 		fillListWithSavedRestaurants();
 	}
 
@@ -92,14 +96,13 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 	}
 
 	private void fillListWithSavedRestaurants() {
-		restaurantsArrayAdapter.clear();
-		restaurantsArrayAdapter.addAll(getSavedRestaurants());
+		List<Restaurant> savedRestaurants = getSavedRestaurants();
+		restaurantsArrayAdapter.setNewRestaurantList(savedRestaurants);
 		showMessageForSavedRestaurants();
 	}
 
 	private List<Restaurant> getSavedRestaurants() {
-		// TODO getSavedRestaurants
-		return new ArrayList<Restaurant>();
+		return datasource.getAllRestaurants();
 	}
 
 	@Override
@@ -111,16 +114,13 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 
 	@Override
 	public void searchRestaurantsSuccessful(List<Restaurant> foundRestaurants) {
+
+		addResultsInDatabase(foundRestaurants);
+
 		if (restaurantsArrayAdapter != null) {
 			hideOfflineModeMessage();
 
-			restaurantsArrayAdapter.clear();
-			restaurantsArrayAdapter.addAll(foundRestaurants);
-
-			Coordinates centralPoint = restaurantsArrayAdapter.refreshCentralPoint();
-			restaurantsArrayAdapter.sort(new DistanceToPointComparator(centralPoint));
-
-			restaurantsArrayAdapter.notifyDataSetChanged();
+			restaurantsArrayAdapter.setNewRestaurantList(foundRestaurants);
 
 			if (foundRestaurants.isEmpty()) {
 				emptyView.setText(R.string.no_restaurants_found);
@@ -155,6 +155,24 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 		} else {
 			tvMessage.setVisibility(View.GONE);
 		}
+	}
+
+	private void addResultsInDatabase(List<Restaurant> result) {
+		for (Restaurant restaurant : result) {
+			datasource.createRestaurant(restaurant);
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		datasource.open();
+	}
+
+	@Override
+	protected void onPause() {
+		datasource.close();
+		super.onPause();
 	}
 
 }
