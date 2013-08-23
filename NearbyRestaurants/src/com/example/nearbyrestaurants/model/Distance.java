@@ -4,7 +4,7 @@ public class Distance {
 
 	public Distance(double amount, DistanceMagnitude magnitude) {
 		super();
-		this.meters = amount / magnitude.inMeters;
+		this.meters = amount * magnitude.inMeters;
 	}
 
 	private double meters;
