@@ -21,7 +21,6 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 	private static final double RADIUS_IN_MILES = 1.0;
 
 	// TODO Refactor
-
 	private static final double METERS_IN_ONE_MILE = 1609.344;
 
 	private SearchRestaurantsAsyncTask searchRestaurantsTask;
@@ -34,12 +33,14 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_restaurant_list);
 
-		fillListWithCachedRestaurants();
+		configureListView();
 
 		searchRestaurantsTask = (SearchRestaurantsAsyncTask) getLastNonConfigurationInstance();
 		if (searchRestaurantsTask != null) {
 			searchRestaurantsTask.setLauncherActivity(this);
 		}
+		showMessageForRestaurantsSearchedSoFar();
+		fillListWithSavedRestaurants();
 
 	}
 
@@ -65,20 +66,26 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.action_search) {
-			searchRestaurantsInRadius(RADIUS_IN_MILES * METERS_IN_ONE_MILE);
+			searchRestaurantsInOneMile();
 			return true;
 		}
 		return false;
 	}
 
-	private void fillListWithCachedRestaurants() {
+	private void searchRestaurantsInOneMile() {
+		searchRestaurantsInRadius(RADIUS_IN_MILES * METERS_IN_ONE_MILE);
+	}
+
+	private void configureListView() {
 		ListView lvRestaurant = (ListView) findViewById(R.id.listView);
-
-		List<Restaurant> restaurants = getCachedRestaurants();
-
-		restaurantsArrayAdapter = new RestaurantsArrayAdapter(this, restaurants);
+		restaurantsArrayAdapter = new RestaurantsArrayAdapter(this);
 		lvRestaurant.setAdapter(restaurantsArrayAdapter);
 		lvRestaurant.setEmptyView(findViewById(R.id.empty));
+	}
+
+	private void fillListWithSavedRestaurants() {
+		restaurantsArrayAdapter.clear();
+		restaurantsArrayAdapter.addAll(getCachedRestaurants());
 	}
 
 	private List<Restaurant> getCachedRestaurants() {
@@ -106,7 +113,18 @@ public class RestaurantListActivity extends Activity implements RestaurantSearch
 
 	@Override
 	public void searchRestaurantsFailed(List<Restaurant> result) {
-		// TODO searchRestaurantsFailed
+		showOfflineModeMessage();
+		fillListWithSavedRestaurants();
+	}
+
+	private void showOfflineModeMessage() {
+		// TODO showOfflineModeMessage
+
+	}
+
+	private void showMessageForRestaurantsSearchedSoFar() {
+		// TODO showMessageForRestaurantsSearchedSoFar if( adapter not empty)
+
 	}
 
 }

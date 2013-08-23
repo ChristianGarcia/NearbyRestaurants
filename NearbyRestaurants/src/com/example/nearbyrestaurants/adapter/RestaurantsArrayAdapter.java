@@ -1,7 +1,5 @@
 package com.example.nearbyrestaurants.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +16,8 @@ public class RestaurantsArrayAdapter extends ArrayAdapter<Restaurant> {
 
 	private Coordinates centralPoint;
 
-	public RestaurantsArrayAdapter(Context context, List<Restaurant> initialList) {
-		super(context, R.layout.list_item_restaurant, initialList);
+	public RestaurantsArrayAdapter(Context context) {
+		super(context, R.layout.list_item_restaurant);
 	}
 
 	public Coordinates refreshCentralPoint() {
